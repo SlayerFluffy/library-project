@@ -31,9 +31,6 @@ app.use('/users', usersRouter);
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(port, function() {
-  console.log('Server listening on port ' + port);
-});
 
 //MongoDB connection
 mongodb.initDb((err, mongodb) => {
