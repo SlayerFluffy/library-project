@@ -4,4 +4,6 @@ var indexController = require('../controllers/indexController');
 
 router.get('/', indexController.getHomePage);
 
+router.use('/books', require('./books'));
+
 module.exports = router;
