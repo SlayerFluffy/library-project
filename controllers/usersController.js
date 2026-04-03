@@ -2,6 +2,16 @@ const mongodb = require('../data/database');
 const crypto = require('crypto');
 
 const getAll = async (req, res) => {
+  //#swagger.tags = ['Users']
+  const db = mongodb.getDatabase();
+  const users = await db.collection('users').find().toArray();
+  res.json(users);
+};
+
+const getSingle = async (req, res) => {
+  //#swagger.tags = ['Users']
+  const db = mongodb.getDatabase();
+  const user = await db.collection('users').findOne({ _id: req.params.id });
   try {
     const db = mongodb.getDatabase();
     const users = await db.collection('users').find().toArray();
@@ -27,6 +37,7 @@ const getSingle = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
+  //#swagger.tags = ['Users']
   try {
     const db = mongodb.getDatabase();
 
@@ -48,6 +59,7 @@ const createUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
+  //#swagger.tags = ['Users']
   try {
     const db = mongodb.getDatabase();
     const userId = req.params.id;
@@ -80,6 +92,8 @@ const updateUser = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
+  //#swagger.tags = ['Users']
+  const db = mongodb.getDatabase();
   try {
     const db = mongodb.getDatabase();
 
