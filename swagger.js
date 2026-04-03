@@ -5,7 +5,7 @@ const doc = {
         title: 'Team project API - Library Management System',
         description: 'API for managing books, users, genres and loans',
     },
-    host: 'library-project-ioy4.onrender.com/',
+    host: 'library-project-ioy4.onrender.com',
     schemes: ['https'],
 }; 
 

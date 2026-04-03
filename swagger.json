@@ -5,7 +5,7 @@
     "description": "API for managing books, users, genres and loans",
     "version": "1.0.0"
   },
-  "host": "library-project-ioy4.onrender.com/",
+  "host": "library-project-ioy4.onrender.com",
   "basePath": "/",
   "schemes": [
     "https"
