@@ -7,7 +7,7 @@
     "dev": "nodemon ./server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "build": "echo \"No build step defined\""
+    "build": "install"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
