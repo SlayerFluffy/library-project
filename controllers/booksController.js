@@ -20,3 +20,91 @@ const getAllBooks = async (req, res) => {
 module.exports = {
     listBooks: getAllBooks
 };
+
+const getBookById = async (req, res) => {
+    const bookId = req.params.id;
+    const client = new MongoClient(process.env.MONGODB_URL);
+    try {
+        await client.connect();
+        const db = client.db();
+        const book = await db.collection('books').findOne({ _id: new ObjectId(bookId) });
+        if (book) {
+            res.json(book);
+        } else {
+            res.status(404).json({ error: 'Book not found' });
+        }
+    } catch (err) { 
+        console.error(err);
+        res.status(500).json({ error: 'Failed to fetch book' });
+    } finally {
+        await client.close();
+    }
+};
+
+const createBook = async (req, res) => {
+    const { name, author, genreId, isbn } = req.body;
+    const client = new MongoClient(process.env.MONGODB_URL);
+    try {
+        await client.connect();
+        const db = client.db();
+        const result = await db.collection('books').insertOne({ name, author, genreId, isbn });
+        res.status(201).json({ _id: result.insertedId, name, author, genreId, isbn });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to create book' });
+    } finally {
+        await client.close();
+    }
+};
+
+const updateBook = async (req, res) => {
+    const bookId = req.params.id;
+    const { name, author, genreId, isbn } = req.body;
+    const client = new MongoClient(process.env.MONGODB_URL);
+    try {
+        await client.connect();
+        const db = client.db();
+        const result = await db.collection('books').updateOne(  
+            { _id: new ObjectId(bookId) },
+            { $set: { name, author, genreId, isbn } }
+        );
+        if (result.matchedCount > 0) {
+            res.json({ _id: bookId, name, author, genreId, isbn });
+        } else {
+            res.status(404).json({ error: 'Book not found' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to update book' });
+    } finally {
+        await client.close();
+    }   
+};
+
+const deleteBook = async (req, res) => {
+    const bookId = req.params.id;
+    const client = new MongoClient(process.env.MONGODB_URL);
+    try {
+        await client.connect();
+        const db = client.db();
+        const result = await db.collection('books').deleteOne({ _id: new ObjectId(bookId) });
+        if (result.deletedCount > 0) {
+            res.json({ message: 'Book deleted successfully' });
+        } else {
+            res.status(404).json({ error: 'Book not found' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to delete book' });
+    } finally {
+        await client.close();
+    }
+};
+
+module.exports = {
+    listBooks: getAllBooks,
+    getBookById,
+    createBook,
+    updateBook,
+    deleteBook
+};

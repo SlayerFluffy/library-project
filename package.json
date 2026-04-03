@@ -6,7 +6,8 @@
     "start": "node ./server.js",
     "dev": "nodemon ./server.js",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "build": "echo \"No build step defined\""
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
