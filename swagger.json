@@ -191,6 +191,7 @@
           "Users"
         ],
         "description": "",
+        "summary": "Get all users",
         "responses": {
           "200": {
             "description": "OK"
@@ -201,21 +202,45 @@
         "tags": [
           "Users"
         ],
+        "summary": "Create a new user",
         "description": "",
         "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "_id": {
-                  "example": "any"
-                }
-              }
+      {
+        "name": "body",
+        "in": "body",
+        "required": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "example": "U001"
+            },
+            "name": {
+              "type": "string",
+              "example": "John Doe"
+            },
+            "email": {
+              "type": "string",
+              "example": "john.doe@example.com"
+            },
+            "phone": {
+              "type": "string",
+              "example": "555-1234"
+            },
+            "isPatron": {
+              "type": "boolean",
+              "example": false
+            },
+            "canEditCatalog": {
+              "type": "boolean",
+              "example": false
             }
-          }
-        ],
+          },
+          "required": ["_id", "name", "email"]
+        }
+      }
+    ],
         "responses": {
           "201": {
             "description": "Created"
@@ -235,6 +260,7 @@
           "Users"
         ],
         "description": "",
+        "summary": "Get a user by ID",
         "parameters": [
           {
             "name": "id",
@@ -257,14 +283,46 @@
           "Users"
         ],
         "description": "",
+        "summary": "Update a user by ID",
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "type": "string",
+        "example": "U001"
+      },
+      {
+        "name": "body",
+        "in": "body",
+        "required": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "example": "John Doe"
+            },
+            "email": {
+              "type": "string",
+              "example": "john.doe@example.com"
+            },
+            "phone": {
+              "type": "string",
+              "example": "555-1234"
+            },
+            "isPatron": {
+              "type": "boolean",
+              "example": false
+            },
+            "canEditCatalog": {
+              "type": "boolean",
+              "example": false
+            }
           }
-        ],
+        }
+      }
+    ],
         "responses": {
           "200": {
             "description": "OK"
@@ -285,6 +343,7 @@
           "Users"
         ],
         "description": "",
+        "summary": "Delete a user by ID",
         "parameters": [
           {
             "name": "id",
