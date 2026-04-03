@@ -3,6 +3,7 @@ const MongoClient = mongodb.MongoClient;
 const ObjectId = mongodb.ObjectId;
 
 const getAllBooks = async (req, res) => {
+    /*#swagger.tags = ['Books']*/
     const client = new MongoClient(process.env.MONGODB_URL);
     try {
         await client.connect();
@@ -17,11 +18,8 @@ const getAllBooks = async (req, res) => {
     }
 };
 
-module.exports = {
-    listBooks: getAllBooks
-};
-
 const getBookById = async (req, res) => {
+    //#swagger.tags = ['Books']
     const bookId = req.params.id;
     const client = new MongoClient(process.env.MONGODB_URL);
     try {
@@ -42,6 +40,7 @@ const getBookById = async (req, res) => {
 };
 
 const createBook = async (req, res) => {
+    //#swagger.tags = ['Books']
     const { name, author, genreId, isbn } = req.body;
     const client = new MongoClient(process.env.MONGODB_URL);
     try {
@@ -58,6 +57,7 @@ const createBook = async (req, res) => {
 };
 
 const updateBook = async (req, res) => {
+    //#swagger.tags = ['Books']
     const bookId = req.params.id;
     const { name, author, genreId, isbn } = req.body;
     const client = new MongoClient(process.env.MONGODB_URL);
@@ -82,6 +82,7 @@ const updateBook = async (req, res) => {
 };
 
 const deleteBook = async (req, res) => {
+    //#swagger.tags = ['Books']
     const bookId = req.params.id;
     const client = new MongoClient(process.env.MONGODB_URL);
     try {
@@ -102,7 +103,7 @@ const deleteBook = async (req, res) => {
 };
 
 module.exports = {
-    listBooks: getAllBooks,
+    getAllBooks,
     getBookById,
     createBook,
     updateBook,
