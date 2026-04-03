@@ -21,21 +21,6 @@ const getSingle = async (req, res) => {
   }
 };
 
-const getSingle = async (req, res) => {
-  try {
-    const db = mongodb.getDatabase();
-    const user = await db.collection('users').findOne({ _id: req.params.id });
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
 const createUser = async (req, res) => {
   //#swagger.tags = ['Users']
   try {
@@ -95,7 +80,6 @@ const deleteUser = async (req, res) => {
   //#swagger.tags = ['Users']
   const db = mongodb.getDatabase();
   try {
-    const db = mongodb.getDatabase();
 
     const result = await db.collection('users').deleteOne({ _id: req.params.id });
 
