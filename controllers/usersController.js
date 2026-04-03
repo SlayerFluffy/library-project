@@ -12,10 +12,28 @@ const getSingle = async (req, res) => {
   //#swagger.tags = ['Users']
   const db = mongodb.getDatabase();
   const user = await db.collection('users').findOne({ _id: req.params.id });
+  try {
+    const db = mongodb.getDatabase();
+    const users = await db.collection('users').find().toArray();
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
-  if (!user) return res.status(404).json({ message: 'User not found' });
+const getSingle = async (req, res) => {
+  try {
+    const db = mongodb.getDatabase();
+    const user = await db.collection('users').findOne({ _id: req.params.id });
 
-  res.json(user);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 const createUser = async (req, res) => {
@@ -76,14 +94,20 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   //#swagger.tags = ['Users']
   const db = mongodb.getDatabase();
+  try {
+    const db = mongodb.getDatabase();
 
-  const result = await db.collection('users').deleteOne({ _id: req.params.id });
+    const result = await db.collection('users').deleteOne({ _id: req.params.id });
 
-  if (result.deletedCount === 0) {
-    return res.status(404).json({ message: 'User not found' });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ message: 'Deleted' });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
-
-  res.json({ message: 'Deleted' });
 };
 
 module.exports = {getAll, getSingle, createUser, updateUser, deleteUser};
