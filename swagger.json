@@ -216,17 +216,21 @@
               "type": "string",
               "example": "U001"
             },
-            "name": {
+            "firstname": {
               "type": "string",
-              "example": "John Doe"
+              "example": "firstname"
+            },
+            "lastname": {
+              "type": "string",
+              "example": "lastname"
             },
             "email": {
               "type": "string",
-              "example": "john.doe@example.com"
+              "example": "email"
             },
             "phone": {
               "type": "string",
-              "example": "555-1234"
+              "example": "phone-number"
             },
             "isPatron": {
               "type": "boolean",
@@ -299,17 +303,21 @@
         "schema": {
           "type": "object",
           "properties": {
-            "name": {
+            "firstname": {
               "type": "string",
-              "example": "John Doe"
+              "example": "firstname"
+            },
+            "lastname": {
+              "type": "string",
+              "example": "lastname"
             },
             "email": {
               "type": "string",
-              "example": "john.doe@example.com"
+              "example": "email"
             },
             "phone": {
               "type": "string",
-              "example": "555-1234"
+              "example": "phone-number"
             },
             "isPatron": {
               "type": "boolean",
