@@ -1,0 +1,36 @@
+### GET all books
+GET https://library-project-ioy4.onrender.com/books HTTP/1.1
+
+### GET a single book by ID
+GET https://library-project-ioy4.onrender.com/books/B009 HTTP/1.1
+
+### Create a new book
+POST https://library-project-ioy4.onrender.com/books HTTP/1.1
+Content-Type: application/json
+
+{
+    "_id": "B010",
+    "name": "Sapiens",
+    "author": "Yuval Noah Harari",
+    "genreId": "G001",
+    "isbn": "9780062316097",
+    "isOnLoan": false,
+    "activeLoanId": null
+}
+
+
+### DELETE a book by ID
+DELETE https://library-project-ioy4.onrender.com/books/B010 HTTP/1.1
+
+### PUT (Update) contact
+PUT https://library-project-ioy4.onrender.com/books/B010 HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "Sapiens",
+    "author": "Yuval Noah Harari",
+    "genreId": "G001",
+    "isbn": "9780062316097",
+    "isOnLoan": false,
+    "activeLoanId": null
+}

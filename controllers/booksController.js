@@ -25,7 +25,7 @@ const getBookById = async (req, res) => {
     try {
         await client.connect();
         const db = client.db();
-        const book = await db.collection('books').findOne({ _id: new ObjectId(bookId) });
+        const book = await db.collection('books').findOne({ _id: bookId });
         if (book) {
             res.json(book);
         } else {
@@ -41,13 +41,18 @@ const getBookById = async (req, res) => {
 
 const createBook = async (req, res) => {
     //#swagger.tags = ['Books']
-    const { name, author, genreId, isbn } = req.body;
+    const { _id,name, author, genreId, isbn, isOnLoan, activeLoanId } = req.body;
     const client = new MongoClient(process.env.MONGODB_URL);
     try {
         await client.connect();
         const db = client.db();
-        const result = await db.collection('books').insertOne({ name, author, genreId, isbn });
-        res.status(201).json({ _id: result.insertedId, name, author, genreId, isbn });
+        if (!_id) {
+            return res.status(400).json({ error: 'Book ID is required' });
+        }
+        const book = {
+            _id, name, author, genreId, isbn, isOnLoan: isOnLoan ?? false, activeLoanId: activeLoanId ?? null};
+        await db.collection('books').insertOne(book);
+        res.status(201).json(book);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to create book' });
@@ -59,17 +64,17 @@ const createBook = async (req, res) => {
 const updateBook = async (req, res) => {
     //#swagger.tags = ['Books']
     const bookId = req.params.id;
-    const { name, author, genreId, isbn } = req.body;
+    const { name, author, genreId, isbn, isOnLoan, activeLoanId } = req.body;
     const client = new MongoClient(process.env.MONGODB_URL);
     try {
         await client.connect();
         const db = client.db();
         const result = await db.collection('books').updateOne(  
-            { _id: new ObjectId(bookId) },
-            { $set: { name, author, genreId, isbn } }
+            { _id: bookId },
+            { $set: { name, author, genreId, isbn, ...(isOnLoan !== undefined && { isOnLoan }), ...(activeLoanId !== undefined && { activeLoanId }) } }
         );
         if (result.matchedCount > 0) {
-            res.json({ _id: bookId, name, author, genreId, isbn });
+            res.json({ _id: bookId, name, author, genreId, isbn, isOnLoan, activeLoanId });
         } else {
             res.status(404).json({ error: 'Book not found' });
         }
@@ -88,7 +93,7 @@ const deleteBook = async (req, res) => {
     try {
         await client.connect();
         const db = client.db();
-        const result = await db.collection('books').deleteOne({ _id: new ObjectId(bookId) });
+        const result = await db.collection('books').deleteOne({ _id: bookId});
         if (result.deletedCount > 0) {
             res.json({ message: 'Book deleted successfully' });
         } else {

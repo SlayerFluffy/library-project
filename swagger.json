@@ -40,6 +40,7 @@
           "Books"
         ],
         "description": "",
+        "summary": "Get all books",
         "responses": {
           "200": {
             "description": "OK"
@@ -54,29 +55,47 @@
           "Books"
         ],
         "description": "",
+        "summary": "Create a new book",
         "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                },
-                "author": {
-                  "example": "any"
-                },
-                "genreId": {
-                  "example": "any"
-                },
-                "isbn": {
-                  "example": "any"
-                }
-              }
+      {
+        "name": "body",
+        "in": "body",
+        "required": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "example": "B005"
+            },
+            "name": {
+              "type": "string",
+              "example": "bookname"
+            },
+            "author": {
+              "type": "string",
+              "example": "authorname"
+            },
+            "genreId": {
+              "type": "string",
+              "example": "G005"
+            },
+            "isbn": {
+              "type": "string",
+              "example": "9780062316097"
+            },
+            "isOnLoan": {
+              "type": "boolean",
+              "example": false
+            },
+            "activeLoanId": {
+              "type": ["string", "null"],
+              "example": null
             }
-          }
-        ],
+          }, "required": ["_id", "name", "author", "genreId", "isbn"]
+        }
+      }
+      ],
         "responses": {
           "201": {
             "description": "Created"
@@ -93,6 +112,7 @@
           "Books"
         ],
         "description": "",
+        "summary": "Get a book by ID",
         "parameters": [
           {
             "name": "id",
@@ -118,30 +138,45 @@
           "Books"
         ],
         "description": "",
+        "summary": "Update a book by ID",
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                },
-                "author": {
-                  "example": "any"
-                },
-                "genreId": {
-                  "example": "any"
-                },
-                "isbn": {
-                  "example": "any"
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "type": "string",
+        "example": "B001"
+      },
+      {
+        "name": "body",
+        "in": "body",
+        "required": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "example": "bookname"
+            },
+            "author": {
+              "type": "string",
+              "example": "authorname"
+            },
+            "genreId": {
+              "type": "string",
+              "example": "G005"
+            },
+            "isbn": {
+              "type": "string",
+              "example": "9780062316097"
+            },
+            "isOnLoan": {
+              "type": "boolean",
+              "example": false
+            },
+            "activeLoanId": {
+              "type": ["string", "null"],
+              "example": null
                 }
               }
             }
@@ -164,6 +199,7 @@
           "Books"
         ],
         "description": "",
+        "summary": "Delete a book by ID",
         "parameters": [
           {
             "name": "id",
