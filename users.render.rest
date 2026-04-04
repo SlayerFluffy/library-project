@@ -1,11 +1,11 @@
 ### GET all users
-GET http://localhost:3000/users HTTP/1.1
+GET https://library-project-ioy4.onrender.com/users HTTP/1.1
 
 ### GET a single user by ID
-GET http://localhost:3000/users/U009 HTTP/1.1
+GET https://library-project-ioy4.onrender.com/users/U009 HTTP/1.1
 
 ### Create a new user
-POST http://localhost:3000/users HTTP/1.1
+POST https://library-project-ioy4.onrender.com/users HTTP/1.1
 Content-Type: application/json
 
 {
@@ -20,15 +20,17 @@ Content-Type: application/json
 
 
 ### DELETE a user by ID
-DELETE http://localhost:3000/users/U011 HTTP/1.1
+DELETE https://library-project-ioy4.onrender.com/users/U011 HTTP/1.1
 
 ### PUT (Update) contact
-PUT http://localhost:3000/users/U011 HTTP/1.1
+PUT https://library-project-ioy4.onrender.com/users/U011 HTTP/1.1
 Content-Type: application/json
 
 {
     "firstName": "Nicolas",
     "lastName": "Pereiro",
     "phone": "555-0313",
-    "email": "nicolas.pereira@example.com"
+    "email": "nicolas.pereira@example.com",
+    "isPatron": true,
+    "canEditCatalog": false
 }

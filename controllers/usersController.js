@@ -1,6 +1,7 @@
 const mongodb = require('../data/database');
 const crypto = require('crypto');
 
+
 const getAll = async (req, res) => {
   //#swagger.tags = ['Users']
   const db = mongodb.getDatabase();
@@ -9,16 +10,24 @@ const getAll = async (req, res) => {
 };
 
 const getSingle = async (req, res) => {
-  //#swagger.tags = ['Users']
-  const db = mongodb.getDatabase();
-  const user = await db.collection('users').findOne({ _id: req.params.id });
-  try {
-    const db = mongodb.getDatabase();
-    const users = await db.collection('users').find().toArray();
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+    //#swagger.tags = ['Users']
+    const userId = req.params.id;
+
+    try {
+        const db = mongodb.getDatabase();
+
+        const user = await db.collection('users').findOne({ _id: userId });
+
+        if (user) {
+            res.json(user);
+        } else {
+            res.status(404).json({ error: 'User not found' });
+        }
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to fetch user' });
+    }
 };
 
 const createUser = async (req, res) => {
@@ -30,14 +39,18 @@ const createUser = async (req, res) => {
       return res.status(400).json({ message: 'Body is required' });
     }
 
+    if (!req.body._id) {
+      return res.status(400).json();
+    }
+
     const user = {
-      ...req.body,
-      _id: req.body._id ? req.body._id : crypto.randomUUID()
+      ...req.body
     };
 
-    const result = await db.collection('users').insertOne(user);
+    await db.collection('users').insertOne(user);
 
     res.status(201).json(user);
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
