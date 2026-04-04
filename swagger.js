@@ -5,8 +5,8 @@ const doc = {
         title: 'Team project API - Library Management System',
         description: 'API for managing books, users, genres and loans',
     },
-    host: 'http://localhost:3000',
-    schemes: ['http'],
+    host: 'library-project-ioy4.onrender.com',
+    schemes: ['https'],
 }; 
 
 const outputFile = './swagger.json';
