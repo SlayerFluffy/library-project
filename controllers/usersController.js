@@ -1,87 +1,53 @@
+const { ObjectId } = require('mongodb');
 const mongodb = require('../data/database');
-const crypto = require('crypto');
 
-
+// GET ALL USERS
 const getAll = async (req, res) => {
-  //#swagger.tags = ['Users']
-  const db = mongodb.getDatabase();
-  const users = await db.collection('users').find().toArray();
-  res.json(users);
-};
-
-const getSingle = async (req, res) => {
-    //#swagger.tags = ['Users']
-    const userId = req.params.id;
-
-    try {
-        const db = mongodb.getDatabase();
-
-        const user = await db.collection('users').findOne({ _id: userId });
-
-        if (user) {
-            res.json(user);
-        } else {
-            res.status(404).json({ error: 'User not found' });
-        }
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to fetch user' });
-    }
-};
-
-const createUser = async (req, res) => {
-  //#swagger.tags = ['Users']
+  /*#swagger.tags = ['Users']*/
   try {
     const db = mongodb.getDatabase();
-
-    if (!req.body || Object.keys(req.body).length === 0) {
-      return res.status(400).json({ message: 'Body is required' });
-    }
-
-    if (!req.body._id) {
-      return res.status(400).json();
-    }
-
-    const user = {
-      ...req.body
-    };
-
-    await db.collection('users').insertOne(user);
-
-    res.status(201).json(user);
-
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    const users = await db.collection('users').find().toArray();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch users' });
   }
 };
 
-const updateUser = async (req, res) => {
-  //#swagger.tags = ['Users']
+// GET SINGLE USER
+const getSingle = async (req, res) => {
+  /*#swagger.tags = ['Users']*/
   try {
     const db = mongodb.getDatabase();
-    const userId = req.params.id;
+    const user = await db.collection('users').findOne({
+      _id: new ObjectId(req.params.id)
+    });
+
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: 'Invalid ID format' });
+  }
+};
+
+// CREATE USER (AUTO-ID)
+const createUser = async (req, res) => {
+  /*#swagger.tags = ['Users']*/
+  try {
+    const db = mongodb.getDatabase();
 
     if (!req.body || Object.keys(req.body).length === 0) {
       return res.status(400).json({ message: 'Body is required' });
     }
 
-    const updatedUser = {
-      ...req.body
-    };
+    // Do NOT accept _id from client
+    const { _id, ...userData } = req.body;
 
-    const result = await db.collection('users').updateOne(
-      { _id: userId },
-      { $set: updatedUser }
-    );
+    const result = await db.collection('users').insertOne(userData);
 
-    if (result.matchedCount === 0) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.status(200).json({
-      message: 'User updated successfully',
-      user: { _id: userId, ...updatedUser }
+    res.status(201).json({
+      _id: result.insertedId,
+      ...userData
     });
 
   } catch (error) {
@@ -89,12 +55,46 @@ const updateUser = async (req, res) => {
   }
 };
 
-const deleteUser = async (req, res) => {
-  //#swagger.tags = ['Users']
-  const db = mongodb.getDatabase();
+// UPDATE USER
+const updateUser = async (req, res) => {
+  /*#swagger.tags = ['Users']*/
   try {
+    const db = mongodb.getDatabase();
+    const userId = new ObjectId(req.params.id);
 
-    const result = await db.collection('users').deleteOne({ _id: req.params.id });
+    if (!req.body || Object.keys(req.body).length === 0) {
+      return res.status(400).json({ message: 'Body is required' });
+    }
+
+    const { _id, ...updateFields } = req.body; // prevent _id overwrite
+
+    const result = await db.collection('users').updateOne(
+      { _id: userId },
+      { $set: updateFields }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({
+      message: 'User updated successfully',
+      user: { _id: userId, ...updateFields }
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: 'Invalid ID format' });
+  }
+};
+
+// DELETE USER
+const deleteUser = async (req, res) => {
+  /*#swagger.tags = ['Users']*/
+  try {
+    const db = mongodb.getDatabase();
+    const result = await db.collection('users').deleteOne({
+      _id: new ObjectId(req.params.id)
+    });
 
     if (result.deletedCount === 0) {
       return res.status(404).json({ message: 'User not found' });
@@ -103,8 +103,8 @@ const deleteUser = async (req, res) => {
     res.json({ message: 'Deleted' });
 
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: 'Invalid ID format' });
   }
 };
 
-module.exports = {getAll, getSingle, createUser, updateUser, deleteUser};
+module.exports = { getAll, getSingle, createUser, updateUser, deleteUser };
