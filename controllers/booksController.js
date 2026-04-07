@@ -1,109 +1,100 @@
-const mongodb = require('mongodb');
-const MongoClient = mongodb.MongoClient;
-const ObjectId = mongodb.ObjectId;
+const { ObjectId } = require('mongodb');
+const { getDatabase } = require('../data/database');
 
+// GET ALL BOOKS
 const getAllBooks = async (req, res) => {
     /*#swagger.tags = ['Books']*/
-    const client = new MongoClient(process.env.MONGODB_URL);
     try {
-        await client.connect();
-        const db = client.db();
+        const db = getDatabase();
         const books = await db.collection('books').find().toArray();
         res.json(books);
-    } catch (err) {
-        console.error(err);
+    }   catch (err) {
         res.status(500).json({ error: 'Failed to fetch books' });
-    } finally {
-        await client.close();
     }
 };
 
+// GET BOOK BY ID
 const getBookById = async (req, res) => {
-    //#swagger.tags = ['Books']
-    const bookId = req.params.id;
-    const client = new MongoClient(process.env.MONGODB_URL);
+    /*#swagger.tags = ['Books']*/
     try {
-        await client.connect();
-        const db = client.db();
-        const book = await db.collection('books').findOne({ _id: bookId });
-        if (book) {
-            res.json(book);
-        } else {
-            res.status(404).json({ error: 'Book not found' });
-        }
-    } catch (err) { 
-        console.error(err);
-        res.status(500).json({ error: 'Failed to fetch book' });
-    } finally {
-        await client.close();
+        const db = getDatabase();
+        const book = await db.collection('books').findOne({ _id: new ObjectId(req.params.id) });
+
+        if (!book) return res.status(404).json({ error: 'Book not found' });
+
+        res.json(book);
+    }   catch (err) {
+        res.status(500).json({ error: 'Invalid ID format' });
     }
 };
 
+// CREATE BOOK (AUTO-ID)
 const createBook = async (req, res) => {
-    //#swagger.tags = ['Books']
-    const { _id,name, author, genreId, isbn, isOnLoan, activeLoanId } = req.body;
-    const client = new MongoClient(process.env.MONGODB_URL);
+    /*#swagger.tags = ['Books']*/
     try {
-        await client.connect();
-        const db = client.db();
-        if (!_id) {
-            return res.status(400).json({ error: 'Book ID is required' });
-        }
-        const book = {
-            _id, name, author, genreId, isbn, isOnLoan: isOnLoan ?? false, activeLoanId: activeLoanId ?? null};
-        await db.collection('books').insertOne(book);
-        res.status(201).json(book);
-    } catch (err) {
-        console.error(err);
+        const db = getDatabase();
+
+        const { name, author, genreId, isbn, isOnLoan, activeLoanId } = req.body;
+
+        const newBook = {
+            name,
+            author,
+            genreId,
+            isbn,
+            isOnLoan: isOnLoan ?? false,
+            activeLoanId: activeLoanId ?? null
+        };
+
+        const result = await db.collection('books').insertOne(newBook);
+
+        res.status(201).json({ _id: result.insertedId, ...newBook });
+    }   catch (err) {
         res.status(500).json({ error: 'Failed to create book' });
-    } finally {
-        await client.close();
     }
 };
 
+// UPDATE BOOK
 const updateBook = async (req, res) => {
-    //#swagger.tags = ['Books']
-    const bookId = req.params.id;
-    const { name, author, genreId, isbn, isOnLoan, activeLoanId } = req.body;
-    const client = new MongoClient(process.env.MONGODB_URL);
+    /*#swagger.tags = ['Books']*/
     try {
-        await client.connect();
-        const db = client.db();
-        const result = await db.collection('books').updateOne(  
+        const db = getDatabase();
+        const bookId = new ObjectId(req.params.id);
+
+        const updateFields = {
+            ...req.body
+        };
+
+        const result = await db.collection('books').updateOne(
             { _id: bookId },
-            { $set: { name, author, genreId, isbn, ...(isOnLoan !== undefined && { isOnLoan }), ...(activeLoanId !== undefined && { activeLoanId }) } }
+            { $set: updateFields }
         );
-        if (result.matchedCount > 0) {
-            res.json({ _id: bookId, name, author, genreId, isbn, isOnLoan, activeLoanId });
-        } else {
-            res.status(404).json({ error: 'Book not found' });
+
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ error: 'Book not found' });
         }
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to update book' });
-    } finally {
-        await client.close();
-    }   
+
+        res.json({ _id: bookId, ...updateFields });
+    }   catch (err) {
+        res.status(500).json({ error: 'Invalid ID format' });
+    }
 };
 
+// DELETE BOOK
 const deleteBook = async (req, res) => {
-    //#swagger.tags = ['Books']
-    const bookId = req.params.id;
-    const client = new MongoClient(process.env.MONGODB_URL);
+    /*#swagger.tags = ['Books']*/
     try {
-        await client.connect();
-        const db = client.db();
-        const result = await db.collection('books').deleteOne({ _id: bookId});
-        if (result.deletedCount > 0) {
-            res.json({ message: 'Book deleted successfully' });
-        } else {
-            res.status(404).json({ error: 'Book not found' });
+        const db = getDatabase();
+        const result = await db.collection('books').deleteOne({
+            _id: new ObjectId(req.params.id)
+        });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ error: 'Book not found' });
         }
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to delete book' });
-    } finally {
-        await client.close();
+
+        res.json({ message: 'Book deleted successfully' });
+    }   catch (err) {
+        res.status(500).json({ error: 'Invalid ID format' });
     }
 };
 

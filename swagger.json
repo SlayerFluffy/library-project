@@ -1,409 +1,246 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Team project API - Library Management System",
+    "title": "Team Project API - Library Management System",
     "description": "API for managing books, users, genres and loans",
     "version": "1.0.0"
   },
-  "host": "library-project-ioy4.onrender.com",
   "basePath": "",
-  "schemes": [
-    "https"
-  ],
   "paths": {
     "/": {
       "get": {
-        "tags": [
-          "Home Page"
-        ],
-        "description": "",
+        "tags": ["Home Page"],
+        "summary": "Home route",
         "responses": {
-          "200": {
-            "description": "OK"
-          }
+          "200": { "description": "OK" }
         }
       }
     },
-    "/api-docs": {
-      "get": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
+
     "/books/": {
       "get": {
-        "tags": [
-          "Books"
-        ],
-        "description": "",
+        "tags": ["Books"],
         "summary": "Get all books",
         "responses": {
           "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
+            "description": "List of books",
+            "schema": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/Book" }
+            }
           }
         }
       },
+
       "post": {
-        "tags": [
-          "Books"
-        ],
-        "description": "",
+        "tags": ["Books"],
         "summary": "Create a new book",
         "parameters": [
-      {
-        "name": "body",
-        "in": "body",
-        "required": true,
-        "schema": {
-          "type": "object",
-          "properties": {
-            "_id": {
-              "type": "string",
-              "example": "B005"
-            },
-            "name": {
-              "type": "string",
-              "example": "bookname"
-            },
-            "author": {
-              "type": "string",
-              "example": "authorname"
-            },
-            "genreId": {
-              "type": "string",
-              "example": "G005"
-            },
-            "isbn": {
-              "type": "string",
-              "example": "9780062316097"
-            },
-            "isOnLoan": {
-              "type": "boolean",
-              "example": false
-            },
-            "activeLoanId": {
-              "type": ["string", "null"],
-              "example": null
-            }
-          }, "required": ["_id", "name", "author", "genreId", "isbn"]
-        }
-      }
-      ],
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/BookCreate" }
+          }
+        ],
         "responses": {
           "201": {
-            "description": "Created"
-          },
-          "500": {
-            "description": "Internal Server Error"
+            "description": "Book created",
+            "schema": { "$ref": "#/definitions/Book" }
           }
         }
       }
     },
+
     "/books/{id}": {
       "get": {
-        "tags": [
-          "Books"
-        ],
-        "description": "",
+        "tags": ["Books"],
         "summary": "Get a book by ID",
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
+          { "name": "id", "in": "path", "required": true, "type": "string" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "Book found", "schema": { "$ref": "#/definitions/Book" } },
+          "404": { "description": "Book not found" }
         }
       },
+
       "put": {
-        "tags": [
-          "Books"
-        ],
-        "description": "",
+        "tags": ["Books"],
         "summary": "Update a book by ID",
         "parameters": [
-      {
-        "name": "id",
-        "in": "path",
-        "required": true,
-        "type": "string",
-        "example": "B001"
-      },
-      {
-        "name": "body",
-        "in": "body",
-        "required": true,
-        "schema": {
-          "type": "object",
-          "properties": {
-            "name": {
-              "type": "string",
-              "example": "bookname"
-            },
-            "author": {
-              "type": "string",
-              "example": "authorname"
-            },
-            "genreId": {
-              "type": "string",
-              "example": "G005"
-            },
-            "isbn": {
-              "type": "string",
-              "example": "9780062316097"
-            },
-            "isOnLoan": {
-              "type": "boolean",
-              "example": false
-            },
-            "activeLoanId": {
-              "type": ["string", "null"],
-              "example": null
-                }
-              }
-            }
+          { "name": "id", "in": "path", "required": true, "type": "string" },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/BookUpdate" }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "Book updated", "schema": { "$ref": "#/definitions/Book" } },
+          "404": { "description": "Book not found" }
         }
       },
+
       "delete": {
-        "tags": [
-          "Books"
-        ],
-        "description": "",
+        "tags": ["Books"],
         "summary": "Delete a book by ID",
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
+          { "name": "id", "in": "path", "required": true, "type": "string" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "Book deleted" },
+          "404": { "description": "Book not found" }
         }
       }
     },
+
     "/users/": {
       "get": {
-        "tags": [
-          "Users"
-        ],
-        "description": "",
+        "tags": ["Users"],
         "summary": "Get all users",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "List of users",
+            "schema": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/User" }
+            }
           }
         }
       },
+
       "post": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Create a new user",
-        "description": "",
         "parameters": [
-      {
-        "name": "body",
-        "in": "body",
-        "required": true,
-        "schema": {
-          "type": "object",
-          "properties": {
-            "_id": {
-              "type": "string",
-              "example": "U001"
-            },
-            "firstname": {
-              "type": "string",
-              "example": "firstname"
-            },
-            "lastname": {
-              "type": "string",
-              "example": "lastname"
-            },
-            "email": {
-              "type": "string",
-              "example": "email"
-            },
-            "phone": {
-              "type": "string",
-              "example": "phone-number"
-            },
-            "isPatron": {
-              "type": "boolean",
-              "example": false
-            },
-            "canEditCatalog": {
-              "type": "boolean",
-              "example": false
-            }
-          },
-          "required": ["_id", "name", "email"]
-        }
-      }
-    ],
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/UserCreate" }
+          }
+        ],
         "responses": {
           "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
+            "description": "User created",
+            "schema": { "$ref": "#/definitions/User" }
           }
         }
       }
     },
+
     "/users/{id}": {
       "get": {
-        "tags": [
-          "Users"
-        ],
-        "description": "",
+        "tags": ["Users"],
         "summary": "Get a user by ID",
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
+          { "name": "id", "in": "path", "required": true, "type": "string" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          }
+          "200": { "description": "User found", "schema": { "$ref": "#/definitions/User" } },
+          "404": { "description": "User not found" }
         }
       },
+
       "put": {
-        "tags": [
-          "Users"
-        ],
-        "description": "",
+        "tags": ["Users"],
         "summary": "Update a user by ID",
         "parameters": [
-      {
-        "name": "id",
-        "in": "path",
-        "required": true,
-        "type": "string",
-        "example": "U001"
-      },
-      {
-        "name": "body",
-        "in": "body",
-        "required": true,
-        "schema": {
-          "type": "object",
-          "properties": {
-            "firstname": {
-              "type": "string",
-              "example": "firstname"
-            },
-            "lastname": {
-              "type": "string",
-              "example": "lastname"
-            },
-            "email": {
-              "type": "string",
-              "example": "email"
-            },
-            "phone": {
-              "type": "string",
-              "example": "phone-number"
-            },
-            "isPatron": {
-              "type": "boolean",
-              "example": false
-            },
-            "canEditCatalog": {
-              "type": "boolean",
-              "example": false
-            }
+          { "name": "id", "in": "path", "required": true, "type": "string" },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/UserUpdate" }
           }
-        }
-      }
-    ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Users"
         ],
-        "description": "",
+        "responses": {
+          "200": { "description": "User updated", "schema": { "$ref": "#/definitions/User" } },
+          "404": { "description": "User not found" }
+        }
+      },
+
+      "delete": {
+        "tags": ["Users"],
         "summary": "Delete a user by ID",
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
+          { "name": "id", "in": "path", "required": true, "type": "string" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          }
+          "200": { "description": "User deleted" },
+          "404": { "description": "User not found" }
         }
+      }
+    }
+  },
+
+  "definitions": {
+    "Book": {
+      "type": "object",
+      "properties": {
+        "_id": { "type": "string" },
+        "name": { "type": "string" },
+        "author": { "type": "string" },
+        "genreId": { "type": "string" },
+        "isbn": { "type": "string" },
+        "isOnLoan": { "type": "boolean" },
+        "activeLoanId": { "type": ["string", "null"] }
+      }
+    },
+
+    "BookCreate": {
+      "type": "object",
+      "required": ["name", "author", "genreId", "isbn"],
+      "properties": {
+        "name": { "type": "string" },
+        "author": { "type": "string" },
+        "genreId": { "type": "string" },
+        "isbn": { "type": "string" },
+        "isOnLoan": { "type": "boolean" },
+        "activeLoanId": { "type": ["string", "null"] }
+      }
+    },
+
+    "BookUpdate": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "author": { "type": "string" },
+        "genreId": { "type": "string" },
+        "isbn": { "type": "string" },
+        "isOnLoan": { "type": "boolean" },
+        "activeLoanId": { "type": ["string", "null"] }
+      }
+    },
+
+    "User": {
+      "type": "object",
+      "properties": {
+        "_id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string" }
+      }
+    },
+
+    "UserCreate": {
+      "type": "object",
+      "required": ["name", "email"],
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string" }
+      }
+    },
+
+    "UserUpdate": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string" }
       }
     }
   }
