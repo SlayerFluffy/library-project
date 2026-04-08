@@ -16,6 +16,11 @@ var requestLogger = require("./middleware/requestLogger");
 var notFound = require("./middleware/notFound");
 var errorHandler = require("./middleware/errorHandler");
 
+// OAuth
+const Githubstrategy= require('passport-github2').Strategy;
+const passport = require('passport');
+const session = require('express-session');
+
 var app = express();
 var port = process.env.PORT || 3000;
 
@@ -41,6 +46,84 @@ app.use((req, res, next) => {
   next();
 });
 
+// Oauth
+app
+   
+   .use(session({
+    secret: "secret", //THIS IS THE COOKIE CALLED SECRET
+    resave: false,
+    saveUninitialized: true ,
+   }))
+   .use(passport.initialize())
+   .use(passport.session())
+   .use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader(
+        "Access-Control-Allow-Methods",
+         "Origin, x-Requested-With, Content-Type, Z-key, Authorization"
+        );
+    res.setHeader("Access-Control-Allow-Headers",
+         "POST, GET, PUT, PATCH, OPTIONS, DELETE"
+        );
+
+    next();
+})
+  
+
+app.use(express.urlencoded({ extended: true }));
+
+
+
+passport.use(new Githubstrategy({
+  clientID: process.env.GITHUB_CLIENT_ID,
+  clientSecret: process.env.GITHUB_CLIENT_SECRET,
+  callbackURL: process.env.CALLBACK_URL
+},
+function(accessToken,refreshToken,profile,done)
+{
+  return done(null,profile);
+}
+
+
+
+
+)),
+
+
+
+passport.serializeUser((user,done)=>
+{
+  done(null,user);
+
+})
+
+
+passport.deserializeUser((user,done)=>
+{
+  done(null,user);
+  
+})
+
+
+
+app.get('/',(req,res)=>{
+  if(req.session.user)
+  {
+    const name = req.session.user.username
+    res.send(`logged in as ${name}`)
+  }
+  else{
+   res.send("Login Out")}
+})
+
+app.get('/github/callback', passport.authenticate('github',{
+  failureRedirect: '/api-docs', session: false}),
+  (req,res)=>{
+    req.session.user = req.user;
+    res.redirect('/');
+  }
+)
+
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
@@ -52,10 +135,14 @@ mongodb.initDb((err, _mongodb) => {
   if (err) {
     console.log(err);
   } else {
-    app.listen(port, () => {
+   
+      console.log(`Database connected successfully`);
+ 
+
+}});
+
+app.listen(port, () => {
       console.log(`Server is running on port ${port}`);
     });
-  }
-});
 
 module.exports = app;
