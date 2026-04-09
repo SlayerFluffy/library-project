@@ -24,7 +24,7 @@ const getBookById = async (req, res) => {
 
         res.json(book);
     }   catch (err) {
-        res.status(500).json({ error: 'Invalid ID format' });
+        res.status(500).json({ error: err.message });
     }
 };
 

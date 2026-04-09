@@ -1,11 +1,14 @@
 const isAuthenticated = (req, res, next) => {
-    if (req.session.user === undefined) {
-        return res.status(401).json('You do not have access' );
+  const passportAuthenticated =
+    typeof req.isAuthenticated === "function" ? req.isAuthenticated() : false;
+  const hasLegacySessionUser = !!(req.session && req.session.user);
 
-    }
-    next();
+  if (!passportAuthenticated && !hasLegacySessionUser) {
+    return res.status(401).json("You do not have access");
+  }
+  next();
 };
 
 module.exports = {
-    isAuthenticated
+  isAuthenticated,
 };
