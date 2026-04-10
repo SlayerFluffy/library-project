@@ -9,9 +9,7 @@ router.get("/", indexController.getHomePage);
 router.use("/books", require("./books"));
 router.use("/users", require("./users"));
 
-router.get("/login", (req, res) => {
-  res.redirect("/auth/github");
-});
+router.get ('/login', passport.authenticate('github'), (req, res) => {});
 
 router.get("/logout", function (req, res, next) {
   req.logout(function (err) {
