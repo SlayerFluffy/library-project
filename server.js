@@ -27,6 +27,7 @@ var port = process.env.PORT || 3000;
 const mongodb = require("./data/database");
 
 app.set("views", path.join(__dirname, "views"));
+app.set('trust proxy', 1);
 
 app.use(logger("dev"));
 app.use(requestLogger);
