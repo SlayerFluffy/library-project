@@ -1,5 +1,6 @@
 module.exports = function errorHandler(err, req, res, _next) {
   res.status(err.status || 500);
+  console.log(err.message);
 
   if (req.accepts('html')) {
     return res.sendFile('error.html', {
