@@ -124,9 +124,13 @@ app.get('/auth/github/callback', passport.authenticate('github',{
   }
 )
 
+// routes
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.use("/genres", require("./routes/genres"));
+app.use("/loans", require("./routes/loans"));
 
+//error handlers
 app.use(notFound);
 app.use(errorHandler);
 
