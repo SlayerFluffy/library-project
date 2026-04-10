@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var indexController = require("../controllers/indexController");
+const passport = require('passport');
 
 router.use("/", require("./swagger"));
 
