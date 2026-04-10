@@ -48,22 +48,22 @@ app.use((req, res, next) => {
 
 // Oauth
 app
-   
-   .use(session({
-    secret: "secret", //THIS IS THE COOKIE CALLED SECRET
-    resave: false,
-    saveUninitialized: true ,
-   }))
-   .use(passport.initialize())
-   .use(passport.session())
-   .use((req, res, next) => {
+  
+    .use(session({
+      secret: "secret", //THIS IS THE COOKIE CALLED SECRET
+      resave: false,
+      saveUninitialized: true ,
+    }))
+    .use(passport.initialize())
+    .use(passport.session())
+    .use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader(
         "Access-Control-Allow-Methods",
-         "Origin, x-Requested-With, Content-Type, Z-key, Authorization"
+          "Origin, x-Requested-With, Content-Type, Z-key, Authorization"
         );
     res.setHeader("Access-Control-Allow-Headers",
-         "POST, GET, PUT, PATCH, OPTIONS, DELETE"
+          "POST, GET, PUT, PATCH, OPTIONS, DELETE"
         );
 
     next();
@@ -113,10 +113,10 @@ app.get('/',(req,res)=>{
     res.send(`logged in as ${name}`)
   }
   else{
-   res.send("Login Out")}
+    res.send("Logged Out")}
 })
 
-app.get('/github/callback', passport.authenticate('github',{
+app.get('/auth/github/callback', passport.authenticate('github',{
   failureRedirect: '/api-docs', session: false}),
   (req,res)=>{
     req.session.user = req.user;
@@ -135,9 +135,9 @@ mongodb.initDb((err, _mongodb) => {
   if (err) {
     console.log(err);
   } else {
-   
+  
       console.log(`Database connected successfully`);
- 
+
 
 }});
 
