@@ -8,7 +8,15 @@ module.exports = [
       globals: {
         console: 'readonly',
         process: 'readonly',
-        __dirname: 'readonly'
+        __dirname: 'readonly',
+        jest: 'readonly',
+        describe: 'readonly',
+        test: 'readonly',
+        expect: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly'
       }
     },
     rules: {
