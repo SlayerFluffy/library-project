@@ -9,6 +9,8 @@ router.get("/", indexController.getHomePage);
 
 router.use("/books", require("./books"));
 router.use("/users", require("./users"));
+router.use("/genres", require("./genres"));
+router.use("/loans", require("./loans"));
 
 router.get ('/login', passport.authenticate('github'), (req, res) => {});
 
