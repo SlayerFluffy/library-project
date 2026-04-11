@@ -3,6 +3,7 @@ const { getDatabase } = require('../data/database');
 
 // GET ALL LOANS
 const getAllLoans = async (req, res) => {
+    /*#swagger.tags = ['Loans']*/
     try {
         const db = getDatabase();
         const loans = await db.collection('loans').find().toArray();
@@ -14,6 +15,7 @@ const getAllLoans = async (req, res) => {
 
 // GET LOAN BY ID
 const getLoanById = async (req, res) => {
+    /*#swagger.tags = ['Loans']*/
     try {
         const db = getDatabase();
         const loan = await db.collection('loans').findOne({
@@ -30,6 +32,7 @@ const getLoanById = async (req, res) => {
 
 // CREATE LOAN
 const createLoan = async (req, res) => {
+    /*#swagger.tags = ['Loans']*/
     try {
         const db = getDatabase();
         const { bookId, userId, loanDate, dueDate, returnDate, status } = req.body;
@@ -53,6 +56,7 @@ const createLoan = async (req, res) => {
 
 // UPDATE LOAN
 const updateLoan = async (req, res) => {
+    /*#swagger.tags = ['Loans']*/
     try {
         const db = getDatabase();
         const loanId = new ObjectId(req.params.id);
@@ -76,6 +80,7 @@ const updateLoan = async (req, res) => {
 
 // DELETE LOAN
 const deleteLoan = async (req, res) => {
+    /*#swagger.tags = ['Loans']*/
     try {
         const db = getDatabase();
         const result = await db.collection('loans').deleteOne({

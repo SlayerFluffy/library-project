@@ -3,6 +3,7 @@ const { getDatabase } = require('../data/database');
 
 // GET ALL GENRES
 const getAllGenres = async (req, res) => {
+    /*#swagger.tags = ['Genres']*/
     try {
         const db = getDatabase();
         const genres = await db.collection('genres').find().toArray();
@@ -14,6 +15,7 @@ const getAllGenres = async (req, res) => {
 
 // GET GENRE BY ID
 const getGenreById = async (req, res) => {
+    /*#swagger.tags = ['Genres']*/
     try {
         const db = getDatabase();
         const genre = await db.collection('genres').findOne({
@@ -30,6 +32,7 @@ const getGenreById = async (req, res) => {
 
 // CREATE GENRE
 const createGenre = async (req, res) => {
+    /*#swagger.tags = ['Genres']*/
     try {
         const db = getDatabase();
         const { name, description } = req.body;
@@ -46,6 +49,7 @@ const createGenre = async (req, res) => {
 
 // UPDATE GENRE
 const updateGenre = async (req, res) => {
+    /*#swagger.tags = ['Genres']*/
     try {
         const db = getDatabase();
         const genreId = new ObjectId(req.params.id);
@@ -69,6 +73,7 @@ const updateGenre = async (req, res) => {
 
 // DELETE GENRE
 const deleteGenre = async (req, res) => {
+    /*#swagger.tags = ['Genres']*/
     try {
         const db = getDatabase();
         const result = await db.collection('genres').deleteOne({

@@ -1,246 +1,616 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Team Project API - Library Management System",
+    "title": "Team project API - Library Management System",
     "description": "API for managing books, users, genres and loans",
     "version": "1.0.0"
   },
-  "basePath": "",
+  "host": "library-project-ioy4.onrender.com",
+  "basePath": "/",
+  "schemes": [
+    "https"
+  ],
   "paths": {
     "/": {
       "get": {
-        "tags": ["Home Page"],
-        "summary": "Home route",
+        "tags": [
+          "Home Page"
+        ],
+        "description": "",
         "responses": {
-          "200": { "description": "OK" }
+          "200": {
+            "description": "OK"
+          }
         }
       }
     },
-
+    "/login": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/logout": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api-docs": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/books/": {
       "get": {
-        "tags": ["Books"],
-        "summary": "Get all books",
+        "tags": [
+          "Books"
+        ],
+        "description": "",
         "responses": {
           "200": {
-            "description": "List of books",
-            "schema": {
-              "type": "array",
-              "items": { "$ref": "#/definitions/Book" }
-            }
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       },
-
       "post": {
-        "tags": ["Books"],
-        "summary": "Create a new book",
+        "tags": [
+          "Books"
+        ],
+        "description": "",
         "parameters": [
           {
             "name": "body",
             "in": "body",
-            "required": true,
-            "schema": { "$ref": "#/definitions/BookCreate" }
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "author": {
+                  "example": "any"
+                },
+                "genreId": {
+                  "example": "any"
+                },
+                "isbn": {
+                  "example": "any"
+                },
+                "isOnLoan": {
+                  "example": "any"
+                },
+                "activeLoanId": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {
           "201": {
-            "description": "Book created",
-            "schema": { "$ref": "#/definitions/Book" }
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
     },
-
     "/books/{id}": {
       "get": {
-        "tags": ["Books"],
-        "summary": "Get a book by ID",
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "type": "string" }
+        "tags": [
+          "Books"
         ],
-        "responses": {
-          "200": { "description": "Book found", "schema": { "$ref": "#/definitions/Book" } },
-          "404": { "description": "Book not found" }
-        }
-      },
-
-      "put": {
-        "tags": ["Books"],
-        "summary": "Update a book by ID",
+        "description": "",
         "parameters": [
-          { "name": "id", "in": "path", "required": true, "type": "string" },
           {
-            "name": "body",
-            "in": "body",
+            "name": "id",
+            "in": "path",
             "required": true,
-            "schema": { "$ref": "#/definitions/BookUpdate" }
+            "type": "string"
           }
         ],
         "responses": {
-          "200": { "description": "Book updated", "schema": { "$ref": "#/definitions/Book" } },
-          "404": { "description": "Book not found" }
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
         }
       },
-
-      "delete": {
-        "tags": ["Books"],
-        "summary": "Delete a book by ID",
+      "put": {
+        "tags": [
+          "Books"
+        ],
+        "description": "",
         "parameters": [
-          { "name": "id", "in": "path", "required": true, "type": "string" }
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
         ],
         "responses": {
-          "200": { "description": "Book deleted" },
-          "404": { "description": "Book not found" }
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Books"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
         }
       }
     },
-
     "/users/": {
       "get": {
-        "tags": ["Users"],
-        "summary": "Get all users",
+        "tags": [
+          "Users"
+        ],
+        "description": "",
         "responses": {
           "200": {
-            "description": "List of users",
-            "schema": {
-              "type": "array",
-              "items": { "$ref": "#/definitions/User" }
-            }
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       },
-
       "post": {
-        "tags": ["Users"],
-        "summary": "Create a new user",
+        "tags": [
+          "Users"
+        ],
+        "description": "",
         "parameters": [
           {
             "name": "body",
             "in": "body",
-            "required": true,
-            "schema": { "$ref": "#/definitions/UserCreate" }
+            "schema": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "example": "any"
+                },
+                "userData": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {
           "201": {
-            "description": "User created",
-            "schema": { "$ref": "#/definitions/User" }
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
     },
-
     "/users/{id}": {
       "get": {
-        "tags": ["Users"],
-        "summary": "Get a user by ID",
+        "tags": [
+          "Users"
+        ],
+        "description": "",
         "parameters": [
-          { "name": "id", "in": "path", "required": true, "type": "string" }
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
         ],
         "responses": {
-          "200": { "description": "User found", "schema": { "$ref": "#/definitions/User" } },
-          "404": { "description": "User not found" }
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
         }
       },
-
       "put": {
-        "tags": ["Users"],
-        "summary": "Update a user by ID",
+        "tags": [
+          "Users"
+        ],
+        "description": "",
         "parameters": [
-          { "name": "id", "in": "path", "required": true, "type": "string" },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
-            "required": true,
-            "schema": { "$ref": "#/definitions/UserUpdate" }
+            "schema": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "example": "any"
+                },
+                "updateFields": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {
-          "200": { "description": "User updated", "schema": { "$ref": "#/definitions/User" } },
-          "404": { "description": "User not found" }
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
         }
       },
-
       "delete": {
-        "tags": ["Users"],
-        "summary": "Delete a user by ID",
+        "tags": [
+          "Users"
+        ],
+        "description": "",
         "parameters": [
-          { "name": "id", "in": "path", "required": true, "type": "string" }
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
         ],
         "responses": {
-          "200": { "description": "User deleted" },
-          "404": { "description": "User not found" }
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
         }
       }
-    }
-  },
-
-  "definitions": {
-    "Book": {
-      "type": "object",
-      "properties": {
-        "_id": { "type": "string" },
-        "name": { "type": "string" },
-        "author": { "type": "string" },
-        "genreId": { "type": "string" },
-        "isbn": { "type": "string" },
-        "isOnLoan": { "type": "boolean" },
-        "activeLoanId": { "type": ["string", "null"] }
+    },
+    "/genres/": {
+      "get": {
+        "tags": [
+          "Genres"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Genres"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "description": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
       }
     },
-
-    "BookCreate": {
-      "type": "object",
-      "required": ["name", "author", "genreId", "isbn"],
-      "properties": {
-        "name": { "type": "string" },
-        "author": { "type": "string" },
-        "genreId": { "type": "string" },
-        "isbn": { "type": "string" },
-        "isOnLoan": { "type": "boolean" },
-        "activeLoanId": { "type": ["string", "null"] }
+    "/genres/{id}": {
+      "get": {
+        "tags": [
+          "Genres"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Genres"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Genres"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
       }
     },
-
-    "BookUpdate": {
-      "type": "object",
-      "properties": {
-        "name": { "type": "string" },
-        "author": { "type": "string" },
-        "genreId": { "type": "string" },
-        "isbn": { "type": "string" },
-        "isOnLoan": { "type": "boolean" },
-        "activeLoanId": { "type": ["string", "null"] }
+    "/loans/": {
+      "get": {
+        "tags": [
+          "Loans"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Loans"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "bookId": {
+                  "example": "any"
+                },
+                "userId": {
+                  "example": "any"
+                },
+                "loanDate": {
+                  "example": "any"
+                },
+                "dueDate": {
+                  "example": "any"
+                },
+                "returnDate": {
+                  "example": "any"
+                },
+                "status": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
       }
     },
-
-    "User": {
-      "type": "object",
-      "properties": {
-        "_id": { "type": "string" },
-        "name": { "type": "string" },
-        "email": { "type": "string" },
-        "role": { "type": "string" }
-      }
-    },
-
-    "UserCreate": {
-      "type": "object",
-      "required": ["name", "email"],
-      "properties": {
-        "name": { "type": "string" },
-        "email": { "type": "string" },
-        "role": { "type": "string" }
-      }
-    },
-
-    "UserUpdate": {
-      "type": "object",
-      "properties": {
-        "name": { "type": "string" },
-        "email": { "type": "string" },
-        "role": { "type": "string" }
+    "/loans/{id}": {
+      "get": {
+        "tags": [
+          "Loans"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Loans"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Loans"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
       }
     }
   }
