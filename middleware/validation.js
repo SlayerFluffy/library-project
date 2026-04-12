@@ -38,8 +38,6 @@ const saveUser = (req, res, next) => {
     lastName:       'required|string|min:1|max:255',
     phone:          'string',
     email:          'required|email',
-    isPatron:       'required|boolean',
-    canEditCatalog: 'required|boolean'
   };
 
   validator(req.body, validationRule, {}, (err, status) => {
