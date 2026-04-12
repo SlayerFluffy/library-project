@@ -60,20 +60,22 @@ const updateBook = async (req, res) => {
         const db = getDatabase();
         const bookId = new ObjectId(req.params.id);
 
-        const updateFields = {
-            ...req.body
-        };
+        if (!req.body || Object.keys(req.body).length === 0) {
+            return res.status(400).json({ message: "Body is required" });
+        }
+
+        const { name, author, genreId, isbn, isOnLoan, activeLoanId } = req.body; // prevent _id overwrite
 
         const result = await db.collection('books').updateOne(
             { _id: bookId },
-            { $set: updateFields }
+            { $set: { name, author, genreId, isbn, isOnLoan, activeLoanId } }
         );
 
         if (result.matchedCount === 0) {
             return res.status(404).json({ error: 'Book not found' });
         }
 
-        res.json({ _id: bookId, ...updateFields });
+        res.json({ _id: bookId, name, author, genreId, isbn, isOnLoan, activeLoanId });
     }   catch (err) {
         res.status(500).json({ error: 'Invalid ID format' });
     }

@@ -1,4 +1,4 @@
-const validator = require('../heplers/validate');
+const validator = require('../helpers/validate');
 const { ObjectId } = require('mongodb');
 //Use AI for this part
 const validateObjectId = (req, res, next) => {

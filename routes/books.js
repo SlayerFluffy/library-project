@@ -10,7 +10,7 @@ const validation = require('../middleware/validation');
 router.get("/", booksController.getAllBooks);
 router.get("/:id", validation.validateObjectId, booksController.getBookById);
 router.post("/", isAuthenticated,validation.saveBook, booksController.createBook);
-router.put("/:id", validation.validateObjectId, isAuthenticated,validation.saveBook,booksController.updateBook);
+router.put("/:id", validation.validateObjectId, isAuthenticated,validation.saveBook, booksController.updateBook);
 router.delete("/:id", validation.validateObjectId, isAuthenticated, booksController.deleteBook);
 
 module.exports = router;

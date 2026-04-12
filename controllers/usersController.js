@@ -41,13 +41,16 @@ const createUser = async (req, res) => {
     }
 
     // Do NOT accept _id from client
-    const { _id, ...userData } = req.body;
+    const newUser = {
+      firstName, lastName, email, isPatron: true, canEditCatalog: false
+    };
+    const { firstName, lastName, email } = req.body; // prevent _id overwrite
 
-    const result = await db.collection('users').insertOne(userData);
+    const result = await db.collection('users').insertOne(newUser);
 
     res.status(201).json({
       _id: result.insertedId,
-      ...userData
+      ...newUser
     });
 
   } catch (error) {
@@ -63,14 +66,15 @@ const updateUser = async (req, res) => {
     const userId = new ObjectId(req.params.id);
 
     if (!req.body || Object.keys(req.body).length === 0) {
-      return res.status(400).json({ message: 'Body is required' });
+      return res.status(400).json({ message: "Body is required" });
     }
 
-    const { _id, ...updateFields } = req.body; // prevent _id overwrite
+    const { firstName, lastName, email, isPatron = true, canEditCatalog = false } = req.body;
+    const userData = { firstName, lastName, email, isPatron, canEditCatalog };
 
     const result = await db.collection('users').updateOne(
       { _id: userId },
-      { $set: updateFields }
+      { $set: userData }
     );
 
     if (result.matchedCount === 0) {
@@ -79,7 +83,7 @@ const updateUser = async (req, res) => {
 
     res.json({
       message: 'User updated successfully',
-      user: { _id: userId, ...updateFields }
+      user: { _id: userId, ...userData }
     });
 
   } catch (error) {

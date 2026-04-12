@@ -54,18 +54,22 @@ const updateGenre = async (req, res) => {
         const db = getDatabase();
         const genreId = new ObjectId(req.params.id);
 
-        const updateFields = { ...req.body };
+        const { name, description } = req.body; // prevent _id overwrite
+
+        if (!name && !description) {
+            return res.status(400).json({ message: "At least one field (name or description) is required" });
+        }
 
         const result = await db.collection('genres').updateOne(
             { _id: genreId },
-            { $set: updateFields }
+            { $set: { name, description } }
         );
 
         if (result.matchedCount === 0) {
             return res.status(404).json({ error: 'Genre not found' });
         }
 
-        res.json({ _id: genreId, ...updateFields });
+        res.json({ _id: genreId, name, description });
     }   catch (err) {
         res.status(500).json({ error: 'Invalid ID format' });
     }
