@@ -61,18 +61,22 @@ const updateLoan = async (req, res) => {
         const db = getDatabase();
         const loanId = new ObjectId(req.params.id);
 
-        const updateFields = { ...req.body };
+        const {bookId, userId, loanDate, dueDate, returnDate, status} = req.body; // prevent _id overwrite
+
+        if (!bookId && !userId && !loanDate && !dueDate && !returnDate && !status) {
+            return res.status(400).json({ message: "At least one field is required to update" });
+        }
 
         const result = await db.collection('loans').updateOne(
             { _id: loanId },
-            { $set: updateFields }
+            { $set: {bookId, userId, loanDate, dueDate, returnDate, status} }
         );
 
         if (result.matchedCount === 0) {
             return res.status(404).json({ error: 'Loan not found' });
         }
 
-        res.json({ _id: loanId, ...updateFields });
+        res.json({ _id: loanId, bookId, userId, loanDate, dueDate, returnDate, status });
     }   catch (err) {
         res.status(500).json({ error: 'Invalid ID format' });
     }
