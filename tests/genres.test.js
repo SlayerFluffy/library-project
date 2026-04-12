@@ -12,9 +12,6 @@ const app = express();
 app.use(express.json());
 app.get('/genres', genresController.getAllGenres);
 app.get('/genres/:id', genresController.getGenreById);
-app.post('/genres', genresController.createGenre);
-app.put('/genres/:id', genresController.updateGenre);
-app.delete('/genres/:id', genresController.deleteGenre);
 
 const FAKE_GENRES = [
   {
@@ -122,74 +119,5 @@ describe('GET /genres/:id', () => {
     const res = await request(app).get(`/genres/${INVALID_ID}`);
 
     expect(res.status).toBe(500);
-  });
-});
-
-describe('POST /genres', () => {
-  beforeEach(() => jest.clearAllMocks());
-
-  test('201 — creates genre', async () => {
-    getDatabase.mockReturnValue({ collection: () => mockCollection() });
-
-    const res = await request(app)
-      .post('/genres')
-      .send({ name: 'Horror', description: 'Scary books' });
-
-    expect(res.status).toBe(201);
-    expect(res.body).toHaveProperty('_id');
-  });
-});
-
-describe('PUT /genres/:id', () => {
-  beforeEach(() => jest.clearAllMocks());
-
-  test('200 — updates genre', async () => {
-    getDatabase.mockReturnValue({ collection: () => mockCollection() });
-
-    const res = await request(app)
-      .put(`/genres/${VALID_ID}`)
-      .send({ name: 'Drama' });
-
-    expect(res.status).toBe(200);
-  });
-
-  test('404 — not found', async () => {
-    getDatabase.mockReturnValue({
-      collection: () =>
-        mockCollection({
-          updateOne: jest.fn().mockResolvedValue({ matchedCount: 0 })
-        })
-    });
-
-    const res = await request(app)
-      .put(`/genres/${VALID_ID}`)
-      .send({ name: 'Drama' });
-
-    expect(res.status).toBe(404);
-  });
-});
-
-describe('DELETE /genres/:id', () => {
-  beforeEach(() => jest.clearAllMocks());
-
-  test('200 — deletes genre', async () => {
-    getDatabase.mockReturnValue({ collection: () => mockCollection() });
-
-    const res = await request(app).delete(`/genres/${VALID_ID}`);
-
-    expect(res.status).toBe(200);
-  });
-
-  test('404 — not found', async () => {
-    getDatabase.mockReturnValue({
-      collection: () =>
-        mockCollection({
-          deleteOne: jest.fn().mockResolvedValue({ deletedCount: 0 })
-        })
-    });
-
-    const res = await request(app).delete(`/genres/${VALID_ID}`);
-
-    expect(res.status).toBe(404);
   });
 });

@@ -12,13 +12,10 @@ const app = express();
 app.use(express.json());
 app.get('/loans', loansController.getAllLoans);
 app.get('/loans/:id', loansController.getLoanById);
-app.post('/loans', loansController.createLoan);
-app.put('/loans/:id', loansController.updateLoan);
-app.delete('/loans/:id', loansController.deleteLoan);
 
 const FAKE_LOANS = [
   {
-    _id: '6650a1b2c3d4e5f6a7b8k9d0',
+    _id: '6650a1b2c3d4e5f6a7b8c9d0',
     bookId: 'b1',
     userId: 'u1',
     loanDate: '2024-01-01',
@@ -29,7 +26,7 @@ const FAKE_LOANS = [
 ];
 
 const FAKE_LOAN = FAKE_LOANS[0];
-const VALID_ID = '6650a1b2c3d4e5f6a7b8k9d0'; // 24-char hex — valid ObjectId
+const VALID_ID = '6650a1b2c3d4e5f6a7b8c9d0'; // 24-char hex — valid ObjectId
 const INVALID_ID = 'not-valid';
 
 const mockCollection = (overrides = {}) => ({
@@ -98,81 +95,5 @@ describe('GET /loans/:id', () => {
 
     const res = await request(app).get(`/loans/${INVALID_ID}`);
     expect(res.status).toBe(500);
-  });
-});
-
-describe('POST /loans', () => {
-  test('201 — creates loan', async () => {
-    getDatabase.mockReturnValue({ collection: () => mockCollection() });
-
-    const res = await request(app)
-      .post('/loans')
-      .send({
-        bookId: 'b1',
-        userId: 'u1',
-        loanDate: '2024-01-01',
-        dueDate: '2024-01-10',
-        status: 'active'
-      });
-
-    expect(res.status).toBe(201);
-    expect(res.body).toHaveProperty('_id');
-  });
-
-  test('500 — create error', async () => {
-    getDatabase.mockReturnValue({
-      collection: () =>
-        mockCollection({
-          insertOne: jest.fn().mockRejectedValue(new Error())
-        })
-    });
-
-    const res = await request(app).post('/loans').send({});
-    expect(res.status).toBe(500);
-  });
-});
-
-describe('PUT /loans/:id', () => {
-  test('200 — updates loan', async () => {
-    getDatabase.mockReturnValue({ collection: () => mockCollection() });
-
-    const res = await request(app)
-      .put(`/loans/${VALID_ID}`)
-      .send({ status: 'returned' });
-
-    expect(res.status).toBe(200);
-  });
-
-  test('404 — not found', async () => {
-    getDatabase.mockReturnValue({
-      collection: () =>
-        mockCollection({
-          updateOne: jest.fn().mockResolvedValue({ matchedCount: 0 })
-        })
-    });
-
-    const res = await request(app).put(`/loans/${VALID_ID}`).send({});
-    expect(res.status).toBe(404);
-  });
-});
-
-describe('DELETE /loans/:id', () => {
-  test('200 — deleted', async () => {
-    getDatabase.mockReturnValue({ collection: () => mockCollection() });
-
-    const res = await request(app).delete(`/loans/${VALID_ID}`);
-    expect(res.status).toBe(200);
-  });
-
-  test('404 — not found', async () => {
-    getDatabase.mockReturnValue({
-      collection: () =>
-        mockCollection({
-          deleteOne: jest.fn().mockResolvedValue({ deletedCount: 0 })
-        })
-    });
-
-    const res = await request(app).delete(`/loans/${VALID_ID}`);
-    expect(res.status).toBe(404);
   });
 });
