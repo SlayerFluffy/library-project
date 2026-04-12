@@ -41,11 +41,12 @@ const createUser = async (req, res) => {
     }
 
     // Do NOT accept _id from client
+    const { firstName, lastName, email } = req.body; // prevent _id overwrite
+    
     const newUser = {
       firstName, lastName, email, isPatron: true, canEditCatalog: false
     };
-    const { firstName, lastName, email } = req.body; // prevent _id overwrite
-
+  
     const result = await db.collection('users').insertOne(newUser);
 
     res.status(201).json({
