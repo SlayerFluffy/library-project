@@ -57,12 +57,12 @@ const saveLoan = (req, res, next) => {
   const validationRule = {
     bookId: 'required|string',
     userId: 'required|string',
-    loanDate: 'required|date',
-    dueDate: 'required|date',
-    returnDate: 'date',
+    checkedOutDate: 'required|date',
+    dueByDate: 'required|date',
+    returnDate: 'string',
     status: 'required|string|min:1|max:50'
   };
-
+  
   validator(req.body, validationRule, {}, (err, status) => {
     if (!status) {
       res.status(412).send({
