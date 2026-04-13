@@ -19,7 +19,7 @@ const getLoanById = async (req, res) => {
     try {
         const db = getDatabase();
         const loan = await db.collection('loans').findOne({
-            _id: new ObjectId(req.params.id)
+            _id:(req.params.id)
         });
 
         if (!loan) return res.status(404).json({ error: 'Loan not found' });
@@ -35,22 +35,30 @@ const createLoan = async (req, res) => {
     /*#swagger.tags = ['Loans']*/
     try {
         const db = getDatabase();
-        const { bookId, userId, loanDate, dueDate, returnDate, status } = req.body;
 
+        const { _id, bookId, userId, checkedOutDate, dueByDate, returnDate, status } = req.body;
+
+        if (!_id) {
+            return res.status(400).json({ error: '_id is required (e.g., L001)' });
+        }
         const newLoan = {
+            _id,
             bookId,
             userId,
-            loanDate,
-            dueDate,
+            checkedOutDate,
+            dueByDate,
             returnDate: returnDate ?? null,
             status
         };
-
-        const result = await db.collection('loans').insertOne(newLoan);
-
-        res.status(201).json({ _id: result.insertedId, ...newLoan });
-    }   catch (err) {
-        res.status(500).json({ error: 'Failed to create loan' });
+        const existingLoan = await db.collection('loans').findOne({ _id });
+        if (existingLoan) {
+            return res.status(409).json({ error: 'Loan with this ID already exists' });
+        }
+        await db.collection('loans').insertOne(newLoan);
+        res.status(201).json(newLoan);
+        
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 };
 
@@ -59,24 +67,24 @@ const updateLoan = async (req, res) => {
     /*#swagger.tags = ['Loans']*/
     try {
         const db = getDatabase();
-        const loanId = new ObjectId(req.params.id);
+        const loanId =(req.params.id);
 
-        const {bookId, userId, loanDate, dueDate, returnDate, status} = req.body; // prevent _id overwrite
+        const {bookId, userId, checkedOutDate, dueByDate, returnDate, status} = req.body; // prevent _id overwrite
 
-        if (!bookId && !userId && !loanDate && !dueDate && !returnDate && !status) {
+        if (!bookId && !userId && !checkedOutDate && !dueByDate && !returnDate && !status) {
             return res.status(400).json({ message: "At least one field is required to update" });
         }
 
         const result = await db.collection('loans').updateOne(
             { _id: loanId },
-            { $set: {bookId, userId, loanDate, dueDate, returnDate, status} }
+            { $set: {bookId, userId, checkedOutDate, dueByDate, returnDate, status} }
         );
 
         if (result.matchedCount === 0) {
             return res.status(404).json({ error: 'Loan not found' });
         }
 
-        res.json({ _id: loanId, bookId, userId, loanDate, dueDate, returnDate, status });
+        res.json({ _id: loanId, bookId, userId, checkedOutDate, dueByDate, returnDate, status });
     }   catch (err) {
         res.status(500).json({ error: 'Invalid ID format' });
     }
@@ -84,27 +92,26 @@ const updateLoan = async (req, res) => {
 
 // DELETE LOAN
 const deleteLoan = async (req, res) => {
-    /*#swagger.tags = ['Loans']*/
     try {
         const db = getDatabase();
         const result = await db.collection('loans').deleteOne({
-            _id: new ObjectId(req.params.id)
-            });
+            _id: req.params.id
+        });
 
         if (result.deletedCount === 0) {
             return res.status(404).json({ error: 'Loan not found' });
         }
 
         res.json({ message: 'Loan deleted successfully' });
-    }   catch (err) {
-        res.status(500).json({ error: 'Invalid ID format' });
+
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 };
-
 module.exports = {
     getAllLoans,
     getLoanById,
     createLoan,
     updateLoan,
-    deleteLoan
+    deleteLoan,
 };

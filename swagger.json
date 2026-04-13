@@ -600,16 +600,19 @@
             "schema": {
               "type": "object",
               "properties": {
+                "_id": {
+                  "example": "any"
+                },
                 "bookId": {
                   "example": "any"
                 },
                 "userId": {
                   "example": "any"
                 },
-                "loanDate": {
+                "checkedOutDate": {
                   "example": "any"
                 },
-                "dueDate": {
+                "dueByDate": {
                   "example": "any"
                 },
                 "returnDate": {
@@ -688,10 +691,10 @@
                 "userId": {
                   "example": "any"
                 },
-                "loanDate": {
+                "checkedOutDate": {
                   "example": "any"
                 },
-                "dueDate": {
+                "dueByDate": {
                   "example": "any"
                 },
                 "returnDate": {
